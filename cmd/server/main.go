@@ -4,15 +4,19 @@ import (
 	"log"
 	"os"
 
+	"github.com/Chintukr2004/go-ecommerce--backend/internal/config"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Println("No .env file found")
-	}
+	_ = godotenv.Load()
+	
+
+	db := config.ConnectDB()
+	defer db.Close()
+
+	config.RunMigrations(db)
 
 	port := os.Getenv("PORT")
 	if port == "" {
