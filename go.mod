@@ -1,4 +1,4 @@
-module github.com/Chintukr2004/go-ecommerce--backend
+module github.com/Chintukr2004/go-ecommerce-backend
 
 go 1.26.1
 

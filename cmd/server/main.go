@@ -4,14 +4,13 @@ import (
 	"log"
 	"os"
 
-	"github.com/Chintukr2004/go-ecommerce--backend/internal/config"
+	"github.com/Chintukr2004/go-ecommerce-backend/internal/config"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
 
 func main() {
 	_ = godotenv.Load()
-	
 
 	db := config.ConnectDB()
 	defer db.Close()
