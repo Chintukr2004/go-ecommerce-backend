@@ -48,3 +48,30 @@ func (h *UserHandler) Register(c *gin.Context) {
 	})
 
 }
+
+type LoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+func (h *UserHandler) Login(c *gin.Context) {
+	var req LoginRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid credentials",
+		})
+		return
+	}
+
+	token, err := h.Service.Login(req.Email, req.Password)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid credentials"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"token": token,
+	})
+
+}
