@@ -5,6 +5,10 @@ import (
 	"os"
 
 	"github.com/Chintukr2004/go-ecommerce-backend/internal/config"
+	"github.com/Chintukr2004/go-ecommerce-backend/internal/handlers"
+	"github.com/Chintukr2004/go-ecommerce-backend/internal/repository"
+	"github.com/Chintukr2004/go-ecommerce-backend/internal/routes"
+	"github.com/Chintukr2004/go-ecommerce-backend/internal/services"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -17,18 +21,17 @@ func main() {
 
 	config.RunMigrations(db)
 
+	r := gin.Default()
+
+	userRepo := repository.NewUserRepository(db)
+	userService := services.NewUserService(userRepo)
+	userHandler := handlers.NewUserhandler(userService)
+	routes.SetupRoutes(r, userHandler)
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
-
-	r := gin.Default()
-	r.GET("/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"status":  "ok",
-			"message": "server is runnig",
-		})
-	})
 
 	log.Println("server started on port ", port)
 
