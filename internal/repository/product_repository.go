@@ -25,12 +25,19 @@ func (r *ProductRepository) Create(p *models.Product) error {
 	return err
 }
 
-func (r *ProductRepository) GetAll() ([]models.Product, error) {
-	rows, err := r.DB.Query(`
+func (r *ProductRepository) GetAll(page, limit int, search string) ([]models.Product, error) {
+
+	offset := (page - 1) * limit
+
+	query := `
 	SELECT id,name,description,price,stock
 	FROM products
+	WHERE LOWER(name) LIKE LOWER($1)
 	ORDER BY id DESC
-	`)
+	LIMIT $2 OFFSET $3
+	`
+
+	rows, err := r.DB.Query(query, "%"+search+"%", limit, offset)
 	if err != nil {
 		return nil, err
 	}
@@ -48,4 +55,46 @@ func (r *ProductRepository) GetAll() ([]models.Product, error) {
 		products = append(products, p)
 	}
 	return products, nil
+}
+
+func (r *ProductRepository) GetByID(id string) (*models.Product, error) {
+	query := `
+		SELECT id, name, description, price, stock
+		FROM products
+		WHERE id = $1
+	`
+	var p models.Product
+
+	err := r.DB.QueryRow(query, id).Scan(
+		&p.ID,
+		&p.Name,
+		&p.Description,
+		&p.Price,
+		&p.Stock,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &p, nil
+
+}
+
+func (r *ProductRepository) Update(id string, p *models.Product) error {
+	query := `
+		UPDATE products
+		SET name=$1, description=$2, price=$3, stock=$4
+		WHERE id=$5
+	`
+
+	_, err := r.DB.Exec(query, p.Name, p.Description, p.Price, p.Stock, id)
+
+	return err
+
+}
+
+func (r *ProductRepository) Delete(id string) error {
+	_, err := r.DB.Exec("DELETE FROM products WHERE id=$1", id)
+	return err
 }

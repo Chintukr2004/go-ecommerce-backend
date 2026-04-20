@@ -25,4 +25,7 @@ func SetupRoutes(r *gin.Engine, userHandler *handlers.UserHandler, productHandle
 
 	api.POST("/products", productHandler.Create)
 	api.GET("/products", productHandler.GetAll)
+	api.GET("/products/:id", productHandler.GetByID)
+	api.PUT("/products/:id", productHandler.Update)
+	api.DELETE("/products/:id", productHandler.Delete)
 }
