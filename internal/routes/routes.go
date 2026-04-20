@@ -6,7 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRoutes(r *gin.Engine, userHandler *handlers.UserHandler) {
+func SetupRoutes(r *gin.Engine, userHandler *handlers.UserHandler, productHandler *handlers.ProductHandler) {
+
 	api := r.Group("/api/v1")
 
 	auth := api.Group("/auth")
@@ -21,4 +22,7 @@ func SetupRoutes(r *gin.Engine, userHandler *handlers.UserHandler) {
 		})
 	},
 	)
+
+	api.POST("/products", productHandler.Create)
+	api.GET("/products", productHandler.GetAll)
 }

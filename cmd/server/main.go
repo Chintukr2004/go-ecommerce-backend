@@ -26,7 +26,12 @@ func main() {
 	userRepo := repository.NewUserRepository(db)
 	userService := services.NewUserService(userRepo)
 	userHandler := handlers.NewUserhandler(userService)
-	routes.SetupRoutes(r, userHandler)
+
+	productRepo := repository.NewProductRepository(db)
+	productService := services.NewProductService(productRepo)
+	productHandler := handlers.NewProductHandler(productService)
+
+	routes.SetupRoutes(r, userHandler, productHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {

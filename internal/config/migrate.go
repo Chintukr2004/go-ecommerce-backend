@@ -20,5 +20,20 @@ func RunMigrations(db *sql.DB) {
 		log.Fatal("migration failed:", err)
 	}
 
+	productQuery := `
+		CREATE TABLE IF NOT EXISTS products(
+		id SERIAL PRIMARY KEY,
+		name TEXT NOT NULL,
+		description TEXT,
+		price NUMERIC(10,2) NOT NULL,
+		stock INT NOT NULL DEFAULT 0,
+		created_at TIMESTAMP DEFAULT NOW()
+		);	
+	`
+	_, err = db.Exec(productQuery)
+	if err != nil {
+		log.Fatal("products migration failed:", err)
+	}
+
 	log.Println("Migrations completed")
 }
