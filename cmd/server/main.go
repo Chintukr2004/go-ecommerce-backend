@@ -35,7 +35,11 @@ func main() {
 	cartService := services.NewCartService(cartRepo)
 	cartHandler := handlers.NewCartHandler(cartService)
 
-	routes.SetupRoutes(r, userHandler, productHandler, cartHandler)
+	orderRepo := repository.NewOrderReposiotry(db)
+	orderService := services.NewOrderService(orderRepo)
+	orderHandler := handlers.NewOrderHandler(orderService)
+
+	routes.SetupRoutes(r, userHandler, productHandler, cartHandler, orderHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {

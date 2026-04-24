@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRoutes(r *gin.Engine, userHandler *handlers.UserHandler, productHandler *handlers.ProductHandler, cartHandler *handlers.CartHandler) {
+func SetupRoutes(r *gin.Engine, userHandler *handlers.UserHandler, productHandler *handlers.ProductHandler, cartHandler *handlers.CartHandler, orderHandler *handlers.OrderHandler) {
 
 	api := r.Group("/api/v1")
 
@@ -36,5 +36,14 @@ func SetupRoutes(r *gin.Engine, userHandler *handlers.UserHandler, productHandle
 	{
 		cart.POST("/add", cartHandler.Add)
 		cart.GET("", cartHandler.Get)
+	}
+
+	// orders
+
+	orders := api.Group("/orders")
+	orders.Use(middleware.AuthMiddleware())
+	{
+		orders.POST("/checkout", orderHandler.Checkout)
+		orders.GET("", orderHandler.Get)
 	}
 }
