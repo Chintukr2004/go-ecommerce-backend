@@ -73,7 +73,7 @@ func (r *ProductRepository) GetByID(id string) (*models.Product, error) {
 		&p.Stock,
 	)
 
-	if err != nil {
+	if err != nil {	
 		return nil, err
 	}
 

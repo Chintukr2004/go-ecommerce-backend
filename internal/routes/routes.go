@@ -6,10 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRoutes(r *gin.Engine, userHandler *handlers.UserHandler, productHandler *handlers.ProductHandler) {
+func SetupRoutes(r *gin.Engine, userHandler *handlers.UserHandler, productHandler *handlers.ProductHandler, cartHandler *handlers.CartHandler) {
 
 	api := r.Group("/api/v1")
 
+	// auth routes
 	auth := api.Group("/auth")
 	{
 		auth.POST("/register", userHandler.Register)
@@ -22,10 +23,18 @@ func SetupRoutes(r *gin.Engine, userHandler *handlers.UserHandler, productHandle
 		})
 	},
 	)
-
+	// product routes
 	api.POST("/products", productHandler.Create)
 	api.GET("/products", productHandler.GetAll)
 	api.GET("/products/:id", productHandler.GetByID)
 	api.PUT("/products/:id", productHandler.Update)
 	api.DELETE("/products/:id", productHandler.Delete)
+
+	// cart routes
+	cart := api.Group("/cart")
+	cart.Use(middleware.AuthMiddleware())
+	{
+		cart.POST("/add", cartHandler.Add)
+		cart.GET("", cartHandler.Get)
+	}
 }
